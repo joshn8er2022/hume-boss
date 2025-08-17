@@ -1,0 +1,99 @@
+
+{
+  "close_crm": {
+    "name": "Close CRM",
+    "url": "https://close-mcp-server.klavis.ai/mcp/",
+    "instance_id": "7a69be3d-40df-4bfe-8cdc-ca8d15d6d6f0",
+    "api_key": "E33hYGfyM2LN5KRkuswV7G765Ga/yoZVctUevP4mG98=",
+    "description": "Close CRM integration for customer management",
+    "capabilities": [
+      "crm",
+      "contacts",
+      "deals",
+      "communication"
+    ],
+    "is_active": true,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "headers": {},
+    "auth_method": null,
+    "created_at": "2025-08-17T21:31:31.123456",
+    "last_connected": null
+  },
+  "slack": {
+    "name": "Slack",
+    "url": "https://slack-mcp-server.klavis.ai/mcp/",
+    "instance_id": "d251a37c-8e99-4e1d-90a2-f10456723a52",
+    "api_key": "E33hYGfyM2LN5KRkuswV7G765Ga/yoZVctUevP4mG98=",
+    "description": "Slack integration for team communication",
+    "capabilities": [
+      "messaging",
+      "channels",
+      "notifications"
+    ],
+    "is_active": true,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "headers": {},
+    "auth_method": null,
+    "created_at": "2025-08-17T21:31:31.123456",
+    "last_connected": null
+  },
+  "linkedin": {
+    "name": "LinkedIn",
+    "url": "https://linkedin-mcp-server.klavis.ai/mcp/",
+    "instance_id": "e7ac77f1-b634-4c13-8335-a7dc028fbb18",
+    "api_key": "E33hYGfyM2LN5KRkuswV7G765Ga/yoZVctUevP4mG98=",
+    "description": "LinkedIn integration for professional networking",
+    "capabilities": [
+      "networking",
+      "posts",
+      "connections"
+    ],
+    "is_active": true,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "headers": {},
+    "auth_method": null,
+    "created_at": "2025-08-17T21:31:31.123456",
+    "last_connected": null
+  },
+  "deep_research": {
+    "name": "Deep Research",
+    "url": "https://firecrawl-deep-research-mcp-server.klavis.ai/mcp/",
+    "instance_id": "4a3119d4-7759-4b50-b237-4be89ed60651",
+    "api_key": "E33hYGfyM2LN5KRkuswV7G765Ga/yoZVctUevP4mG98=",
+    "description": "Deep research capabilities using Firecrawl",
+    "capabilities": [
+      "research",
+      "web_scraping",
+      "analysis"
+    ],
+    "is_active": true,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "headers": {},
+    "auth_method": null,
+    "created_at": "2025-08-17T21:31:31.123456",
+    "last_connected": null
+  },
+  "web_crawl": {
+    "name": "Web Crawl",
+    "url": "https://firecrawl-websearch-mcp-server.klavis.ai/mcp/",
+    "instance_id": "20e341b2-68cf-4121-862e-24287741128f",
+    "api_key": "E33hYGfyM2LN5KRkuswV7G765Ga/yoZVctUevP4mG98=",
+    "description": "Web search and crawling using Firecrawl",
+    "capabilities": [
+      "web_search",
+      "crawling",
+      "data_extraction"
+    ],
+    "is_active": true,
+    "connection_timeout": 30,
+    "retry_attempts": 3,
+    "headers": {},
+    "auth_method": null,
+    "created_at": "2025-08-17T21:31:31.123456",
+    "last_connected": null
+  }
+}

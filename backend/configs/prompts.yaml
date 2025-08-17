@@ -1,0 +1,38 @@
+
+data_analysis_react:
+  name: Data Analysis React Agent
+  signature: question -> analysis
+  description: React agent for data analysis tasks
+  input_fields:
+  - question
+  - data
+  output_fields:
+  - analysis
+  - insights
+  - recommendations
+  examples:
+  - question: Analyze sales trends
+    analysis: Based on the data, sales have increased 15% over the last quarter...
+  is_react_agent: true
+  react_steps: 5
+  react_tools:
+  - python
+  - pandas
+  - matplotlib
+task_assignment:
+  name: Task Assignment
+  signature: task, available_agents -> assignment
+  description: Assigns tasks to appropriate agents
+  input_fields:
+  - task
+  - available_agents
+  - priorities
+  output_fields:
+  - assignment
+  - reasoning
+  examples:
+  - task: Research market trends
+    assignment: Assign to research_specialist due to expertise in market analysis
+  is_react_agent: false
+  react_steps: null
+  react_tools: []
