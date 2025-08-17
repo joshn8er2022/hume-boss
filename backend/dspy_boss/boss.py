@@ -1,6 +1,6 @@
 
 """
-Main DSPY Boss class - orchestrates the entire system
+Main DSPY Boss class - orchestrates the entire system with autonomous DSPY-driven intelligence
 """
 
 import asyncio
@@ -12,16 +12,25 @@ from loguru import logger
 import dspy
 
 from .config import DSPYBossConfig, load_full_config
-from .models import TaskDefinition, TaskPriority, AgentConfig, SystemMetrics, ReportEntry
+from .models import (
+    TaskDefinition, TaskPriority, AgentConfig, SystemMetrics, ReportEntry,
+    SystemState, AutonomousConfig, LLMProviderConfig
+)
 from .state_machine import StateMachineManager, BossState
 from .mcp import MCPManager
 from .task_manager import TaskManager
 from .agents import AgentManager
 from .self_diagnosis import SelfDiagnosisSystem
 
+# New autonomous components
+from .autonomous_engine import AutonomousEngine
+from .state_holder import StateHolder
+from .agent_hierarchy import AgentHierarchy
+from .llm_providers import LLMProviderManager, LLMProvider
+
 
 class DSPYBoss:
-    """Main DSPY Boss system orchestrator"""
+    """Main DSPY Boss system orchestrator - Now fully autonomous and DSPY-driven"""
     
     def __init__(self, config_dir: str = "configs"):
         # Load configuration
@@ -39,8 +48,18 @@ class DSPYBoss:
         )
         self.diagnosis_system = SelfDiagnosisSystem(self.state_manager)
         
+        # NEW: Autonomous DSPY-driven components
+        self.state_holder = StateHolder(max_recent_states=100)
+        self.llm_manager = LLMProviderManager()
+        self.autonomous_engine = AutonomousEngine(
+            state_holder=self.state_holder,
+            llm_manager=self.llm_manager,
+            mcp_manager=self.mcp_manager
+        )
+        
         # System state
         self.is_running = False
+        self.is_autonomous = False  # NEW: Track autonomous mode
         self.start_time: Optional[datetime] = None
         
         # Background tasks
@@ -49,11 +68,14 @@ class DSPYBoss:
         # Setup logging
         self._setup_logging()
         
-        # Setup DSPY
+        # Setup DSPY (will be replaced by LLM manager)
         self._setup_dspy()
         
         # Setup signal handlers
         self._setup_signal_handlers()
+        
+        # Initialize autonomous configuration
+        self.autonomous_config = AutonomousConfig()
         
         logger.info(f"DSPY Boss initialized with {len(self.config.mcp_servers)} MCP servers, "
                    f"{len(self.config.agents)} agents, and {len(self.config.prompt_signatures)} prompt signatures")
@@ -481,3 +503,99 @@ if __name__ == "__main__":
             config_dir = sys.argv[i + 1]
     
     asyncio.run(run_dspy_boss(config_dir, dry_run))
+
+    # ============= NEW AUTONOMOUS METHODS =============
+    
+    async def start_autonomous_mode(self):
+        """Start fully autonomous DSPY-driven operation"""
+        if self.is_autonomous:
+            logger.warning("Already in autonomous mode")
+            return
+            
+        logger.info("🚀 Starting AUTONOMOUS DSPY-driven mode...")
+        
+        # Initialize LLM providers first
+        provider_count = await self.llm_manager.initialize_all_providers()
+        if provider_count == 0:
+            logger.error("❌ No LLM providers initialized. Cannot start autonomous mode.")
+            return False
+            
+        # Start autonomous engine
+        await self.autonomous_engine.start_autonomous_operation()
+        self.is_autonomous = True
+        
+        # Update system state
+        self.state_holder.update_current_state({
+            "autonomous_mode": True,
+            "start_time": datetime.utcnow().isoformat(),
+            "active_providers": self.llm_manager.get_available_providers()
+        })
+        
+        logger.info("✅ Autonomous mode ACTIVE - DSPY signatures are now in control")
+        return True
+        
+    async def stop_autonomous_mode(self):
+        """Stop autonomous operation"""
+        if not self.is_autonomous:
+            logger.warning("Not in autonomous mode")
+            return
+            
+        logger.info("⏹️ Stopping autonomous mode...")
+        
+        await self.autonomous_engine.stop_autonomous_operation()
+        self.is_autonomous = False
+        
+        # Update system state
+        self.state_holder.update_current_state({
+            "autonomous_mode": False,
+            "stop_time": datetime.utcnow().isoformat()
+        })
+        
+        logger.info("✅ Autonomous mode stopped")
+        
+    def set_llm_api_key(self, provider: str, api_key: str) -> bool:
+        """Set API key for LLM provider"""
+        try:
+            from .llm_providers import LLMProvider
+            provider_enum = LLMProvider(provider.lower())
+            self.llm_manager.set_api_key(provider_enum, api_key)
+            logger.info(f"🔑 API key set for {provider}")
+            return True
+        except ValueError:
+            logger.error(f"❌ Unknown provider: {provider}")
+            return False
+            
+    def get_llm_provider_status(self) -> Dict[str, Any]:
+        """Get status of all LLM providers"""
+        return self.llm_manager.get_provider_status()
+        
+    def get_agent_hierarchy_status(self) -> Dict[str, Any]:
+        """Get agent hierarchy status with proper numbering"""
+        return self.autonomous_engine.agent_hierarchy.get_all_statuses()
+        
+    def get_agent_display_info(self) -> List[Dict[str, Any]]:
+        """Get agent info for UI display (Boss = Agent 0, others = Agent 1, 2, 3...)"""
+        return self.autonomous_engine.agent_hierarchy.get_agent_display_info()
+        
+    def get_autonomous_status(self) -> Dict[str, Any]:
+        """Get autonomous operation status"""
+        current_context = self.autonomous_engine.current_context
+        
+        return {
+            "is_autonomous": self.is_autonomous,
+            "iteration_count": self.autonomous_engine.iteration_count,
+            "current_phase": current_context.phase.value if current_context else None,
+            "current_iteration_id": current_context.iteration_id if current_context else None,
+            "system_state": self.state_holder.get_current_state(),
+            "recent_decisions": self.state_holder.get_recent_states(5),
+            "agent_hierarchy": self.get_agent_hierarchy_status(),
+            "llm_providers": self.get_llm_provider_status()
+        }
+        
+    def get_autonomous_config(self) -> Dict[str, Any]:
+        """Get autonomous configuration"""
+        return {
+            "autonomous_config": self.autonomous_config.dict(),
+            "llm_config": self.llm_manager.export_config(),
+        }
+

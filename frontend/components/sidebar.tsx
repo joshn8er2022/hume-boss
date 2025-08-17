@@ -26,6 +26,12 @@ const navigation = [
     description: 'System status and key metrics'
   },
   {
+    name: 'Autonomous Engine',
+    href: '/autonomous',
+    icon: Zap,
+    description: 'Autonomous DSPY-driven operation control'
+  },
+  {
     name: 'Boss State',
     href: '/boss',
     icon: Brain,

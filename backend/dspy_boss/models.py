@@ -236,3 +236,89 @@ class DiagnosisResult(BaseModel):
     code_executed: Optional[str] = None
     execution_output: Optional[str] = None
     execution_error: Optional[str] = None
+
+
+# New models for autonomous DSPY-driven system
+class SystemState(BaseModel):
+    """Complete system state snapshot"""
+    model_config = ConfigDict(extra="allow")
+    
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    iteration_count: int = Field(default=0)
+    autonomous_mode: bool = Field(default=False)
+    active_agents: List[Dict[str, Any]] = Field(default_factory=list)
+    recent_decisions: List[Dict[str, Any]] = Field(default_factory=list)
+    system_health: Dict[str, Any] = Field(default_factory=dict)
+    current_phase: Optional[str] = None
+
+
+class IterationResult(BaseModel):
+    """Complete iteration result from autonomous engine"""
+    model_config = ConfigDict(extra="allow")
+    
+    iteration_id: int
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    pre_processing: Optional[Dict[str, Any]] = None
+    boss_decision: Optional[Dict[str, Any]] = None
+    execution: Optional[Dict[str, Any]] = None
+    next_prep: Optional[Dict[str, Any]] = None
+    error_info: Optional[Dict[str, Any]] = None
+    duration_seconds: Optional[float] = None
+
+
+class LearningEntry(BaseModel):
+    """System learning entry from autonomous operations"""
+    model_config = ConfigDict(extra="allow")
+    
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    learning_type: str  # "iteration_analysis", "error_analysis", "pattern_recognition"
+    content: Dict[str, Any] = Field(default_factory=dict)
+    iteration_id: Optional[int] = None
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    confidence_score: Optional[float] = None
+    applied: bool = Field(default=False)
+
+
+class AgentHierarchy(BaseModel):
+    """Agent hierarchy state"""
+    model_config = ConfigDict(extra="allow")
+    
+    boss_agent: Optional[Dict[str, Any]] = None
+    subordinate_agents: List[Dict[str, Any]] = Field(default_factory=list)
+    total_agents: int = Field(default=1)  # Including boss
+    next_agent_id: int = Field(default=1)
+    hierarchy_established: datetime = Field(default_factory=datetime.utcnow)
+
+
+class LLMProviderConfig(BaseModel):
+    """LLM Provider configuration"""
+    model_config = ConfigDict(extra="allow")
+    
+    provider_name: str
+    api_key: Optional[str] = None  # Will be encrypted in storage
+    base_url: Optional[str] = None
+    model: str = "gpt-4-turbo-preview"
+    max_tokens: int = Field(default=4000)
+    temperature: float = Field(default=0.7)
+    is_active: bool = Field(default=True)
+    is_initialized: bool = Field(default=False)
+    last_tested: Optional[datetime] = None
+    test_status: Optional[str] = None
+
+
+class AutonomousConfig(BaseModel):
+    """Configuration for autonomous operation"""
+    model_config = ConfigDict(extra="allow")
+    
+    is_enabled: bool = Field(default=False)
+    iteration_interval_seconds: float = Field(default=1.0)
+    max_concurrent_agents: int = Field(default=10)
+    state_history_limit: int = Field(default=100)
+    auto_scale_agents: bool = Field(default=True)
+    error_recovery_enabled: bool = Field(default=True)
+    
+    # DSPY specific settings
+    primary_llm_provider: Optional[str] = None
+    fallback_llm_provider: Optional[str] = None
+    signature_optimization: bool = Field(default=True)
+    retrieval_augmented: bool = Field(default=True)
