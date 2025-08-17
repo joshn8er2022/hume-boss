@@ -210,6 +210,7 @@ class SystemMetrics(BaseModel):
     # System metrics
     memory_usage_mb: float = Field(default=0.0)
     cpu_usage_percent: float = Field(default=0.0)
+    disk_usage_percent: float = Field(default=0.0)
     
     # MCP metrics
     active_mcp_connections: int = Field(default=0)

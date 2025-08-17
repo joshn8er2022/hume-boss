@@ -11,7 +11,6 @@ from enum import Enum
 from loguru import logger
 
 import dspy
-from dspy import OpenAI, AzureOpenAI
 from dspy.teleprompt import BootstrapFewShot
 
 
@@ -131,8 +130,8 @@ class LLMProviderManager:
                 return False
                 
             if provider == LLMProvider.OPENAI:
-                model = OpenAI(
-                    model=config.model,
+                model = dspy.LM(
+                    model=f"openai/{config.model}",
                     api_key=config.api_key,
                     max_tokens=config.max_tokens,
                     temperature=config.temperature
@@ -140,8 +139,8 @@ class LLMProviderManager:
                 
             elif provider == LLMProvider.GROK:
                 # Grok uses OpenAI-compatible API
-                model = OpenAI(
-                    model=config.model,
+                model = dspy.LM(
+                    model=f"openai/{config.model}",
                     api_key=config.api_key,
                     api_base=config.base_url,
                     max_tokens=config.max_tokens,
@@ -150,23 +149,26 @@ class LLMProviderManager:
                 
             elif provider == LLMProvider.OLLAMA:
                 # Ollama integration
-                from dspy.retrieve.ollama_rm import OllamaRM
-                model = OllamaRM(
-                    model=config.model,
-                    base_url=config.base_url,
+                model = dspy.LM(
+                    model=f"ollama/{config.model}",
+                    api_base=config.base_url,
                     max_tokens=config.max_tokens,
                     temperature=config.temperature
                 )
                 
             elif provider == LLMProvider.GOOGLE:
-                # Google AI integration (would need proper dspy integration)
-                logger.warning(f"🚧 Google AI provider not yet fully integrated")
-                return False
+                # Google AI integration
+                model = dspy.LM(
+                    model=f"google/{config.model}",
+                    api_key=config.api_key,
+                    max_tokens=config.max_tokens,
+                    temperature=config.temperature
+                )
                 
             elif provider == LLMProvider.OPENROUTER:
                 # OpenRouter uses OpenAI-compatible API
-                model = OpenAI(
-                    model=config.model,
+                model = dspy.LM(
+                    model=f"openrouter/{config.model}",
                     api_key=config.api_key,
                     api_base=config.base_url,
                     max_tokens=config.max_tokens,

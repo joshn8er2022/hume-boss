@@ -135,6 +135,9 @@ class TaskManager:
             "average_duration": 0.0,
             "tasks_per_minute": 0.0
         }
+        self.completed_count = 0
+        self.failed_count = 0
+        self.start_time = datetime.utcnow()
         
         logger.info(f"TaskManager initialized with {workers} workers")
     
@@ -243,3 +246,12 @@ class TaskManager:
     def get_active_tasks(self) -> Dict[str, TaskDefinition]:
         """Get currently active tasks"""
         return self.tasks.copy()
+    
+    def get_all_tasks(self) -> List[TaskDefinition]:
+        """Get all tasks (active and completed)"""
+        return list(self.tasks.values())
+    
+    def get_throughput(self) -> float:
+        """Get tasks per minute throughput"""
+        # Simple calculation - can be enhanced with time windows
+        return self.completed_count / max(1, (datetime.utcnow() - self.start_time).total_seconds() / 60) if hasattr(self, 'start_time') else 0.0

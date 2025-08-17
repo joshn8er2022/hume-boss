@@ -20,34 +20,72 @@ import SystemMetricsChart from '@/components/system-metrics-chart';
 import TaskDistributionChart from '@/components/task-distribution-chart';
 import AgentStatusGrid from '@/components/agent-status-grid';
 import MCPServerStatus from '@/components/mcp-server-status';
-import { mockSystemOverview, mockTasks, mockAgents, mockMCPServers } from '@/lib/mock-data';
-import { formatDuration, formatBytes, getHealthScore } from '@/lib/dashboard-utils';
+import DynamicStatusIndicator, { useSystemStatus, SystemState } from '@/components/dynamic-status-indicator';
+import { toast } from 'sonner';
+import { getHealthScore, formatDuration, formatBytes } from '@/lib/dashboard-utils';
 
 export default function SystemOverviewDashboard() {
-  const [overview, setOverview] = useState(mockSystemOverview);
-  const [tasks, setTasks] = useState(mockTasks);
-  const [agents, setAgents] = useState(mockAgents);
-  const [mcpServers, setMcpServers] = useState(mockMCPServers);
-  const [isLoading, setIsLoading] = useState(false);
+  const [overview, setOverview] = useState<any>(null);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [agents, setAgents] = useState<any[]>([]);
+  const [mcpServers, setMcpServers] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('connecting');
+  
+  // Use the real-time system status hook
+  const { status: systemStatus, lastUpdate } = useSystemStatus();
 
-  // Simulate real-time updates
+  // Fetch initial data and set up real-time updates
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulate data updates
-      setOverview(prev => ({
-        ...prev,
-        metrics: {
-          ...prev.metrics,
-          timestamp: new Date().toISOString(),
-          tasks_per_minute: 2 + Math.random() * 2,
-          cpu_usage_percent: 15 + Math.random() * 15,
-          memory_usage_mb: 400 + Math.random() * 200
-        }
-      }));
-    }, 5000);
-
+    fetchSystemData();
+    
+    // Set up periodic data refresh
+    const interval = setInterval(fetchSystemData, 10000); // Every 10 seconds
+    
     return () => clearInterval(interval);
   }, []);
+
+  const fetchSystemData = async () => {
+    try {
+      setConnectionStatus('connecting');
+      
+      // Fetch system overview
+      const overviewResponse = await fetch('/api/system/overview');
+      if (overviewResponse.ok) {
+        const overviewData = await overviewResponse.json();
+        setOverview(overviewData);
+      }
+      
+      // Fetch agents
+      const agentsResponse = await fetch('/api/agents');
+      if (agentsResponse.ok) {
+        const agentsData = await agentsResponse.json();
+        setAgents(agentsData);
+      }
+      
+      // Fetch tasks
+      const tasksResponse = await fetch('/api/tasks');
+      if (tasksResponse.ok) {
+        const tasksData = await tasksResponse.json();
+        setTasks(tasksData);
+      }
+      
+      // Fetch MCP servers
+      const mcpResponse = await fetch('/api/mcp-servers');
+      if (mcpResponse.ok) {
+        const mcpData = await mcpResponse.json();
+        setMcpServers(mcpData);
+      }
+      
+      setConnectionStatus('connected');
+      setIsLoading(false);
+      
+    } catch (error) {
+      console.error('Error fetching system data:', error);
+      setConnectionStatus('disconnected');
+      toast.error('Failed to connect to backend system');
+    }
+  };
 
   const healthScore = getHealthScore(overview);
   const connectedMCPServers = mcpServers?.filter(server => server?.status === 'connected')?.length || 0;
@@ -56,8 +94,53 @@ export default function SystemOverviewDashboard() {
     return acc;
   }, {} as Record<string, number>);
 
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading system data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
+      {/* System Status Header */}
+      <div className="bg-white rounded-lg shadow-sm border p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <DynamicStatusIndicator 
+              state={systemStatus as SystemState} 
+              size="lg" 
+              showLabel={true}
+            />
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">DSPY Boss System</h2>
+              <p className="text-gray-600">
+                Last updated: {lastUpdate.toLocaleTimeString()} • 
+                Connection: <span className={`font-medium ${
+                  connectionStatus === 'connected' ? 'text-green-600' : 
+                  connectionStatus === 'connecting' ? 'text-yellow-600' : 'text-red-600'
+                }`}>
+                  {connectionStatus}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500">Health Score</div>
+            <div className={`text-2xl font-bold ${
+              (overview?.health_score || 0) > 80 ? 'text-green-600' : 
+              (overview?.health_score || 0) > 60 ? 'text-yellow-600' : 'text-red-600'
+            }`}>
+              {overview?.health_score || 0}%
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Top Stats Row */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <DashboardCard

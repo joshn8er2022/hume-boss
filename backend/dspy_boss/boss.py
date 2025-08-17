@@ -446,6 +446,10 @@ class DSPYBoss:
         else:
             raise ValueError(f"Unknown diagnosis type: {diagnosis_type}")
     
+    async def get_system_metrics(self) -> SystemMetrics:
+        """Get current system metrics"""
+        return await self.diagnosis_system.get_current_metrics()
+    
     async def run_forever(self):
         """Run the system indefinitely"""
         await self.start()

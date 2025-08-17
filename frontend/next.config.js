@@ -14,6 +14,18 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   images: { unoptimized: true },
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:8003/api/:path*',
+      },
+      {
+        source: '/ws',
+        destination: 'http://localhost:8003/ws',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

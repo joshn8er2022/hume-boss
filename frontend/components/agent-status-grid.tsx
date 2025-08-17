@@ -2,12 +2,13 @@
 'use client';
 
 import { Users, Bot, MessageCircle, Clock } from 'lucide-react';
-import { AgentConfig, AgentType } from '@/lib/types';
-import { formatRelativeTime, getStatusColor } from '@/lib/dashboard-utils';
 import { Badge } from '@/components/ui/badge';
+import AgentModelSelector from '@/components/agent-model-selector';
+import DynamicStatusIndicator, { SystemState } from '@/components/dynamic-status-indicator';
+import { AgentType } from '@/lib/types';
 
 interface AgentStatusGridProps {
-  agents: AgentConfig[];
+  agents: any[];
 }
 
 export default function AgentStatusGrid({ agents }: AgentStatusGridProps) {
@@ -32,7 +33,11 @@ export default function AgentStatusGrid({ agents }: AgentStatusGridProps) {
           {/* Header */}
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">
-              {agent?.type === AgentType.HUMAN ? (
+              <DynamicStatusIndicator 
+                state={agent?.status as SystemState || 'IDLE'} 
+                size="sm" 
+              />
+              {agent?.type === 'HUMAN' ? (
                 <Users className="h-5 w-5 text-blue-600" />
               ) : (
                 <Bot className="h-5 w-5 text-purple-600" />
@@ -41,9 +46,9 @@ export default function AgentStatusGrid({ agents }: AgentStatusGridProps) {
             </div>
             <Badge 
               variant="outline"
-              className={getStatusColor(agent?.is_available ? 'available' : 'unavailable')}
+              className={agent?.is_active ? 'border-green-200 bg-green-50 text-green-700' : 'border-gray-200 bg-gray-50 text-gray-700'}
             >
-              {agent?.is_available ? 'Available' : 'Unavailable'}
+              {agent?.is_active ? 'Active' : 'Inactive'}
             </Badge>
           </div>
 
@@ -85,10 +90,18 @@ export default function AgentStatusGrid({ agents }: AgentStatusGridProps) {
               </div>
             )}
             
-            {agent?.type === AgentType.AGENTIC && agent?.model_name && (
-              <div className="flex items-center justify-between">
-                <span>Model:</span>
-                <span className="font-medium">{agent?.model_name}</span>
+            {agent?.type === AgentType.AGENTIC && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span>Current Model:</span>
+                  <span className="font-medium">{agent?.model_name || 'Not set'}</span>
+                </div>
+                <AgentModelSelector 
+                  agentId={agent?.id}
+                  currentModel={agent?.model_name}
+                  currentProvider={agent?.provider}
+                  size="sm"
+                />
               </div>
             )}
             

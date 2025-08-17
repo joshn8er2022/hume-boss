@@ -613,6 +613,39 @@ opt_result
         if len(self.metrics_history) > self.max_metrics_history:
             self.metrics_history = self.metrics_history[-self.max_metrics_history:]
     
+    async def get_current_metrics(self) -> SystemMetrics:
+        """Get current system metrics"""
+        import psutil
+        from datetime import datetime
+        
+        # Get current system stats
+        cpu_percent = psutil.cpu_percent(interval=0.1)
+        memory = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        # Create basic metrics (would be enhanced with real task data)
+        metrics = SystemMetrics(
+            timestamp=datetime.utcnow(),
+            active_agents_count=0,  # Would be populated from agent manager
+            tasks_per_minute=0.0,    # Would be populated from task manager
+            average_task_completion_time=0.0,
+            task_success_rate=100.0,
+            cpu_usage_percent=cpu_percent,
+            memory_usage_mb=memory.used / (1024 * 1024),
+            disk_usage_percent=(disk.used / disk.total) * 100,
+            agent_utilization=0.0,
+            active_mcp_connections=0,
+            mcp_response_time_avg=0.0
+        )
+        
+        return metrics
+    
+    def get_health_score(self) -> float:
+        """Get current system health score"""
+        if self.metrics_history:
+            return self.metrics_history[-1].health_score
+        return 85.0  # Default health score
+    
     def get_metrics_summary(self) -> Dict[str, Any]:
         """Get summary of system metrics"""
         if not self.metrics_history:

@@ -8,3 +8,6 @@ httpx>=0.24.0
 aiohttp>=3.8.0
 async-queue-manager>=4.0.0
 psutil>=5.9.0
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+websockets>=12.0

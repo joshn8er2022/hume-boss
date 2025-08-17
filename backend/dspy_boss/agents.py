@@ -667,3 +667,39 @@ class AgentManager:
             logger.info(f"Removed idle agent: {agent.config.name}")
         
         return len(agents_to_remove)
+    
+    async def update_agent_model(self, agent_id: str, model_name: str, provider: Optional[str] = None) -> bool:
+        """Update an agent's model"""
+        if agent_id not in self.agents:
+            logger.error(f"Agent {agent_id} not found")
+            return False
+        
+        agent = self.agents[agent_id]
+        
+        # Only agentic agents can have their models updated
+        if agent.config.type != AgentType.AGENTIC:
+            logger.warning(f"Cannot update model for non-agentic agent: {agent_id}")
+            return False
+        
+        try:
+            # Update agent configuration
+            agent.config.model_name = model_name
+            if provider:
+                agent.config.provider = provider
+            
+            # If it's an agentic agent, update the DSPY configuration
+            if isinstance(agent, AgenticAgent):
+                # Create new LM with updated model
+                lm = dspy.LM(model=model_name)
+                agent.lm = lm
+                
+                # Update agent's DSPY modules if they exist
+                if hasattr(agent, 'agent_module'):
+                    agent.agent_module = agent._create_agent_module()
+            
+            logger.info(f"Updated agent {agent_id} to use model {model_name}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error updating agent model: {e}")
+            return False

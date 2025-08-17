@@ -181,6 +181,15 @@ class StateMachineManager:
         self.transition = StateTransition()
         self.auto_transition_enabled = True
         self.transition_interval = 5.0  # seconds
+    
+    @property
+    def current_state(self) -> BossState:
+        """Get current state"""
+        return self.transition.current_state
+    
+    def get_state_data(self) -> Dict[str, Any]:
+        """Get current state data"""
+        return self.transition.state_data.model_dump()
         
     def setup_default_callbacks(self):
         """Setup default callbacks for state transitions"""
