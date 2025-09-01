@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Any, Union, Callable
 from enum import Enum
 from pydantic import BaseModel, Field
 from loguru import logger
+import dspy
 
 from .agent_hierarchy import AgentHierarchy, BaseAgent, BossAgent, SubordinateAgent, AgentRole, AgentStatus
 from .agent_spawner import AgentSpawner, SpawningStrategy, SpawningDecision
