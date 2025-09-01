@@ -114,7 +114,7 @@ class AgentManager:
         self.agent_registry = AgentRegistry()
         
         # Task delegation
-        self.task_delegation_signature = TaskDelegationSignature()
+        self.task_delegation_predictor = dspy.Predict(TaskDelegationSignature)
         
         # System state
         self.is_initialized = False
@@ -362,7 +362,7 @@ class AgentManager:
             
             # Use DSPY signature
             with dspy.context(lm=dspy.OpenAI(**self.llm_config)):
-                delegation_result = self.task_delegation_signature(
+                delegation_result = self.task_delegation_predictor(
                     delegation_context=delegation_context,
                     optimization_goals=optimization_goals
                 )

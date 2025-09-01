@@ -323,7 +323,7 @@ class LLMProviderManager:
         provider_id: Optional[str] = None,
         model: Optional[str] = None,
         **kwargs
-    ) -> Optional[dspy.LM]:
+    ) -> Optional[Any]:
         """
         Get a DSPY language model from the best available provider
         

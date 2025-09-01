@@ -101,10 +101,16 @@ class HistoricalStateManager:
         # Pattern storage
         self.identified_patterns: Dict[str, StatePattern] = {}
         
-        # Initialize database
-        asyncio.create_task(self._initialize_database())
+        # Database initialization will be done lazily
+        self._db_initialized = False
         
         logger.info(f"HistoricalStateManager initialized with storage at {self.storage_path}")
+    
+    async def _ensure_database_initialized(self):
+        """Ensure database is initialized (lazy initialization)"""
+        if not self._db_initialized:
+            await self._initialize_database()
+            self._db_initialized = True
     
     async def _initialize_database(self):
         """Initialize SQLite database for state metadata"""

@@ -4,7 +4,7 @@ Agent hierarchy and management system for DSPY Boss
 """
 
 from .agent_hierarchy import AgentHierarchy, BossAgent, SubordinateAgent
-from .agent_spawner import AgentSpawner, AgentSpawningStrategy
+from .agent_spawner import AgentSpawner, SpawningStrategy
 from .agent_communication import AgentCommunicationHub, Message, MessageType
 from .agent_manager import AgentManager, AgentRegistry
 
@@ -13,7 +13,7 @@ __all__ = [
     "BossAgent", 
     "SubordinateAgent",
     "AgentSpawner",
-    "AgentSpawningStrategy",
+    "SpawningStrategy",
     "AgentCommunicationHub",
     "Message",
     "MessageType", 

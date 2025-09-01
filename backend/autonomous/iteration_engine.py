@@ -99,9 +99,9 @@ class IterationEngine:
         self.forecaster = forecaster
         
         # DSPY signatures
-        self.preprocessing_signature = IterationPreprocessingSignature()
-        self.decision_signature = AutonomousDecisionSignature()
-        self.next_iteration_signature = NextIterationSignature()
+        self.preprocessing_predictor = dspy.Predict(IterationPreprocessingSignature)
+        self.decision_predictor = dspy.Predict(AutonomousDecisionSignature)
+        self.next_iteration_predictor = dspy.Predict(NextIterationSignature)
         
         # LLM configuration
         self.llm_config = llm_config or {"model": "gpt-4", "temperature": 0.7}
@@ -230,7 +230,7 @@ class IterationEngine:
             
             # Use DSPY for preprocessing
             with dspy.context(lm=dspy.OpenAI(**self.llm_config)):
-                preprocessing_result = self.preprocessing_signature(
+                preprocessing_result = self.preprocessing_predictor(
                     preprocessing_context=preprocessing_context,
                     system_state=state.dict(),
                     retrieval_results=self._get_retrieval_context(state, historical_patterns)
@@ -283,7 +283,7 @@ class IterationEngine:
             
             # Use DSPY for autonomous decision making
             with dspy.context(lm=dspy.OpenAI(**self.llm_config)):
-                decision_result = self.decision_signature(
+                decision_result = self.decision_predictor(
                     context=system_context,
                     historical_pattern_analysis=historical_analysis,
                     current_objectives=current_objectives
@@ -524,7 +524,7 @@ class IterationEngine:
             
             # Use DSPY for next iteration planning
             with dspy.context(lm=dspy.OpenAI(**self.llm_config)):
-                next_iteration_result = self.next_iteration_signature(
+                next_iteration_result = self.next_iteration_predictor(
                     iteration_context=next_iteration_context,
                     system_feedback=system_feedback
                 )

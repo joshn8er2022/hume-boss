@@ -23,7 +23,7 @@ class NewAgentSpec(BaseModel):
     agent_type: str = Field(..., description="Type/role of the agent")
     capabilities: List[str] = Field(..., description="Capabilities this agent should have")
     specialization: str = Field(..., description="Primary specialization area")
-    model_config: Dict[str, Any] = Field(..., description="LLM model configuration")
+    llm_model_config: Dict[str, Any] = Field(..., description="LLM model configuration")
     max_concurrent_tasks: int = Field(default=3, description="Maximum concurrent tasks")
     priority_level: int = Field(default=3, description="Agent priority level (1-5)")
     resource_allocation: Dict[str, Any] = Field(default_factory=dict)

@@ -57,8 +57,8 @@ class StateForecaster:
     
     def __init__(self, historical_manager: HistoricalStateManager):
         self.historical_manager = historical_manager
-        self.forecasting_signature = StateForecastingSignature()
-        self.historical_analysis_signature = HistoricalAnalysisSignature()
+        self.forecasting_predictor = dspy.Predict(StateForecastingSignature)
+        self.historical_analysis_predictor = dspy.Predict(HistoricalAnalysisSignature)
         
         # Forecast cache
         self.forecast_cache: Dict[str, ForecastModel] = {}
@@ -115,7 +115,7 @@ class StateForecaster:
             
             # Use DSPY signature to generate forecast
             with dspy.context(lm=dspy.OpenAI(model="gpt-4")):  # Use appropriate LLM
-                forecast_result = self.forecasting_signature(
+                forecast_result = self.forecasting_predictor(
                     forecasting_context=forecasting_context,
                     forecast_horizon=horizon,
                     scenario_parameters=scenario_parameters
@@ -186,7 +186,7 @@ class StateForecaster:
             
             # Use DSPY signature for historical analysis
             with dspy.context(lm=dspy.OpenAI(model="gpt-4")):
-                analysis_result = self.historical_analysis_signature(
+                analysis_result = self.historical_analysis_predictor(
                     historical_data=historical_data,
                     analysis_focus=analysis_focus,
                     comparison_timeframe=f"{timeframe_days} days"

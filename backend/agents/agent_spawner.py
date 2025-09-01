@@ -93,7 +93,7 @@ class AgentSpawner:
         self.llm_config = llm_config or {"model": "gpt-4", "temperature": 0.7}
         
         # DSPY signature
-        self.spawning_signature = AgentSpawningSignature()
+        self.spawning_predictor = dspy.Predict(AgentSpawningSignature)
         
         # Spawning rules and configuration
         self.spawning_rules: Dict[str, SpawningRule] = {}
@@ -543,7 +543,7 @@ class AgentSpawner:
             
             # Use DSPY signature
             with dspy.context(lm=dspy.OpenAI(**self.llm_config)):
-                spawning_result = self.spawning_signature(
+                spawning_result = self.spawning_predictor(
                     spawning_context=context,
                     system_requirements=system_requirements,
                     boss_strategy=boss_strategy

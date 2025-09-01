@@ -1,0 +1,43 @@
+# DSPY Boss System Requirements
+
+# Core DSPY Framework
+dspy-ai>=2.4.0
+
+# Data validation and models
+pydantic>=2.5.0
+
+# Async HTTP and networking
+aiohttp>=3.9.0
+requests>=2.31.0
+
+# Logging
+loguru>=0.7.0
+
+# Docker integration (for Ollama)
+docker>=7.0.0
+
+# Data processing
+numpy>=1.24.0
+
+# Environment and configuration
+python-dotenv>=1.0.0
+
+# Database (built-in with Python)
+# sqlite3 - Built-in, no installation needed
+
+# Additional utilities that might be needed
+python-dateutil>=2.8.0
+pytz>=2023.3
+
+# Optional: OpenAI SDK (if using OpenAI directly)
+openai>=1.0.0
+
+# Optional: Google AI SDK  
+google-generativeai>=0.3.0
+
+# Optional: Anthropic SDK (for Claude via OpenRouter)
+anthropic>=0.7.0
+
+# Web server (if running standalone)
+uvicorn>=0.24.0
+fastapi>=0.104.0

@@ -53,7 +53,7 @@ class BaseLLMProvider(ABC):
         """Test connection to the provider"""
         pass
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY language model instance"""
         raise NotImplementedError("Subclasses must implement get_dspy_lm")
     
@@ -179,7 +179,7 @@ class OpenAIProvider(BaseLLMProvider):
                 "error": f"OpenAI connection test failed: {e}"
             }
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY OpenAI language model"""
         
         model = model or self.config.default_model
@@ -302,7 +302,7 @@ class GrokProvider(BaseLLMProvider):
                 "error": f"Grok connection test failed: {e}"
             }
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY Grok language model"""
         
         model = model or self.config.default_model or "grok-beta"
@@ -438,7 +438,7 @@ class GoogleProvider(BaseLLMProvider):
                 "error": f"Google Gemini connection test failed: {e}"
             }
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY Google language model"""
         
         model = model or self.config.default_model or "gemini-1.5-pro"
@@ -568,7 +568,7 @@ class OpenRouterProvider(BaseLLMProvider):
                 "error": f"OpenRouter connection test failed: {e}"
             }
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY OpenRouter language model"""
         
         model = model or self.config.default_model or "anthropic/claude-3-sonnet"
@@ -792,7 +792,7 @@ class OllamaProvider(BaseLLMProvider):
                 "error": f"Ollama connection test failed: {e}"
             }
     
-    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) -> dspy.LM:
+    def get_dspy_lm(self, model: Optional[str] = None, **kwargs) :
         """Get DSPY Ollama language model"""
         
         model = model or self.config.default_model or "llama2"
