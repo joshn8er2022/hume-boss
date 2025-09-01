@@ -1,0 +1,138 @@
+{
+  "openai": {
+    "provider_type": "openai",
+    "provider_name": "OpenAI",
+    "api_base": "https://api.openai.com/v1",
+    "timeout_seconds": 30,
+    "max_retries": 3,
+    "retry_delay_seconds": 1.0,
+    "available_models": [
+      "gpt-4",
+      "gpt-4-turbo",
+      "gpt-4-turbo-preview",
+      "gpt-3.5-turbo",
+      "gpt-3.5-turbo-16k"
+    ],
+    "default_model": "gpt-4",
+    "default_temperature": 0.7,
+    "default_max_tokens": null,
+    "default_top_p": null,
+    "provider_settings": {},
+    "enabled": true,
+    "priority": 1,
+    "last_used": null,
+    "error_count": 0,
+    "success_count": 0,
+    "docker_config": null
+  },
+  "grok": {
+    "provider_type": "grok",
+    "provider_name": "Grok (xAI)",
+    "api_base": "https://api.x.ai/v1",
+    "timeout_seconds": 30,
+    "max_retries": 3,
+    "retry_delay_seconds": 1.0,
+    "available_models": [
+      "grok-beta",
+      "grok-vision-beta"
+    ],
+    "default_model": "grok-beta",
+    "default_temperature": 0.7,
+    "default_max_tokens": null,
+    "default_top_p": null,
+    "provider_settings": {},
+    "enabled": true,
+    "priority": 2,
+    "last_used": null,
+    "error_count": 0,
+    "success_count": 0,
+    "docker_config": null
+  },
+  "google": {
+    "provider_type": "google",
+    "provider_name": "Google Gemini",
+    "api_base": "https://generativelanguage.googleapis.com/v1beta",
+    "timeout_seconds": 30,
+    "max_retries": 3,
+    "retry_delay_seconds": 1.0,
+    "available_models": [
+      "gemini-1.5-pro",
+      "gemini-1.5-flash",
+      "gemini-pro",
+      "gemini-pro-vision"
+    ],
+    "default_model": "gemini-1.5-pro",
+    "default_temperature": 0.7,
+    "default_max_tokens": null,
+    "default_top_p": null,
+    "provider_settings": {},
+    "enabled": true,
+    "priority": 2,
+    "last_used": null,
+    "error_count": 0,
+    "success_count": 0,
+    "docker_config": null
+  },
+  "openrouter": {
+    "provider_type": "openrouter",
+    "provider_name": "OpenRouter",
+    "api_base": "https://openrouter.ai/api/v1",
+    "timeout_seconds": 30,
+    "max_retries": 3,
+    "retry_delay_seconds": 1.0,
+    "available_models": [
+      "anthropic/claude-3-opus",
+      "anthropic/claude-3-sonnet",
+      "meta-llama/llama-2-70b-chat",
+      "mistralai/mixtral-8x7b-instruct"
+    ],
+    "default_model": "anthropic/claude-3-sonnet",
+    "default_temperature": 0.7,
+    "default_max_tokens": null,
+    "default_top_p": null,
+    "provider_settings": {},
+    "enabled": true,
+    "priority": 3,
+    "last_used": null,
+    "error_count": 0,
+    "success_count": 0,
+    "docker_config": null
+  },
+  "ollama": {
+    "provider_type": "ollama",
+    "provider_name": "Ollama (Local)",
+    "api_base": "http://localhost:11434/v1",
+    "timeout_seconds": 30,
+    "max_retries": 3,
+    "retry_delay_seconds": 1.0,
+    "available_models": [
+      "llama2",
+      "llama2:13b",
+      "llama2:70b",
+      "codellama",
+      "mistral",
+      "neural-chat"
+    ],
+    "default_model": "llama2",
+    "default_temperature": 0.7,
+    "default_max_tokens": null,
+    "default_top_p": null,
+    "provider_settings": {},
+    "enabled": true,
+    "priority": 4,
+    "last_used": null,
+    "error_count": 0,
+    "success_count": 0,
+    "docker_config": {
+      "image": "ollama/ollama",
+      "port": 11434,
+      "volumes": [
+        "/var/lib/ollama:/root/.ollama"
+      ],
+      "environment": {
+        "OLLAMA_HOST": "0.0.0.0",
+        "OLLAMA_ORIGINS": "*"
+      }
+    }
+  }
+}
